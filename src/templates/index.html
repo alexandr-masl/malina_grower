@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Irrigation Shots Monitor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .status-active {
+            color: green;
+            font-weight: bold;
+        }
+        .status-upcoming {
+            color: orange;
+            font-weight: bold;
+        }
+        .status-completed, .status-missed {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>Irrigation Shots Monitor</h1>
+    <p>Current Time: <span id="current-time"></span></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="shots-table-body"></tbody>
+    </table>
+    <script>
+        async function fetchShots() {
+            try {
+                const response = await fetch("/api/shots");
+                const data = await response.json();
+
+                if (data.error) {
+                    console.error(data.error);
+                    return;
+                }
+
+                document.getElementById("current-time").innerText = data.current_time;
+                const tableBody = document.getElementById("shots-table-body");
+                tableBody.innerHTML = "";
+
+                data.shots.forEach(shot => {
+                    const row = document.createElement("tr");
+
+                    const timeCell = document.createElement("td");
+                    timeCell.innerText = shot.time;
+                    row.appendChild(timeCell);
+
+                    const statusCell = document.createElement("td");
+                    statusCell.innerText = shot.status;
+                    statusCell.className = `status-${shot.status.toLowerCase()}`;
+                    row.appendChild(statusCell);
+
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("Error fetching shots:", error);
+            }
+        }
+
+        setInterval(fetchShots, 1000);
+        fetchShots();
+    </script>
+</body>
+</html>

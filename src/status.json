@@ -1,0 +1,13 @@
+{
+    "current_time": "2025-01-10 18:07:19",
+    "shots": [
+        {
+            "time": "18:07",
+            "status": "Completed"
+        },
+        {
+            "time": "20:00",
+            "status": "Upcoming"
+        }
+    ]
+}
